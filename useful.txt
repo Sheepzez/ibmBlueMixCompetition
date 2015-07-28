@@ -1,0 +1,4 @@
+
+cf login -a api.ng.bluemix.net -u isaacjordan95@gmail.com -p password -o isaacjordan95_org -s MySpace
+
+cf push app_name -b https://hub.jazz.net/project/FcoRamos/BuildpackC
