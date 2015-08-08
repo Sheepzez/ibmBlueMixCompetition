@@ -27,7 +27,7 @@ function createXHR(){
 }
 function xhrGet(url, key, data, callback, errback){
 	var xhr = new createXHR();
-	xhr.open("GET", url + "?" + key + "=" + data, true);
+	xhr.open("GET", url + "?" + key + "=" + encodeURIComponent(data), true);
 	xhr.onreadystatechange = function(){
 		if(xhr.readyState == 4){
 			if(xhr.status == 200){
@@ -56,7 +56,7 @@ function xhrPost(url, key, data, callback, errback) {
 	};
 	xhr.ontimeout = errback;
 	xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	xhr.send(key + "=" + data);
+	xhr.send(key + "=" + encodeURIComponent(data));
 }
 function parseJson(str){
 	return window.JSON ? JSON.parse(str) : eval('(' + str + ')');

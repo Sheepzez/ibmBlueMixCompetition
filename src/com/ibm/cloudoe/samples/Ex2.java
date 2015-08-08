@@ -1,7 +1,7 @@
 package com.ibm.cloudoe.samples;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,28 +17,60 @@ public class Ex2 {
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	public String getInformation(@FormParam("text") String text) {
-		long startTime = System.currentTimeMillis();
+		//long startTime = System.currentTimeMillis();
 		//100,50,20,10,5,2,1:57
 		String lines[] = text.split("\\n");
 		Pattern p = Pattern.compile("(\\d+)");
 		Matcher m;
-		String line;
 		StringBuilder r = new StringBuilder();
 		List<Integer> nums;
 		int changeToCalculate;
 		for (int i=0; i<lines.length-1;i++) {
+			// Parse the input into lists of integers.
 			nums = new ArrayList<>();
-			line = lines[i];
-			m = p.matcher(line);
+			m = p.matcher(lines[i]);
 			while (m.find()) {
 				 nums.add(Integer.parseInt(m.group()));
 			}
+			
 			changeToCalculate = nums.remove(nums.size()-1);
-			r.append("<p>Coins available: " + nums.toString() +" | Change to calc: " + changeToCalculate + "</p>");
+			
+			// Create the output HTML.
+			r.append("<p>");
+			for (Pair<Integer, Integer> values : calculateChange(nums, changeToCalculate)) {
+				if (values.right != 0) {
+					r.append(values.left + "x" + values.right + ",");
+				}
+			}
+			r.deleteCharAt(r.length()-1);
+			r.append("</p>");
 		}
-		long endTime = System.currentTimeMillis();
-	    r.append("<h4>Total execution time: " + (endTime-startTime) + "ms</h4>"); 
+		//long endTime = System.currentTimeMillis();
+	    //System.out.println("Total execution time: " + (endTime-startTime) + "ms"); 
 		return r.toString();
+	}
+	
+	/**
+	 *  Returns a list of pairs where the left value is the coin value, and the right value is how many to use.
+	 */
+	private List<Pair<Integer, Integer>> calculateChange(List<Integer> coins, int changeToMake) {
+		Collections.sort(coins, Collections.reverseOrder());
+		List<Pair<Integer, Integer>> result = new ArrayList<>();
+		for (int coin : coins) {
+			result.add(new Pair<Integer, Integer>(coin, 0));
+		}
+		int i = 0;
+		while (changeToMake > 0) {
+			if (changeToMake - coins.get(i) >= 0) {
+				changeToMake -= coins.get(i);
+				result.get(i).right++;
+			}
+			else {
+				i++;
+			}
+		}
+		System.out.println(result);
+		return result;
 	}
 }
 
