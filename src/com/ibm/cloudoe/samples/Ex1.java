@@ -14,29 +14,31 @@ public class Ex1 {
 	
 	static HashMap<Integer, BigInteger> factorials = new HashMap<>();
 
+	/**
+	 * Entry point of AJAX call.
+	 */
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	public String getInformation(@FormParam("text") String text) {
-		//long startTime = System.currentTimeMillis();
 		String lines[] = text.split("\\n");
 		System.out.println(Arrays.toString(lines));
 		StringBuilder r = new StringBuilder();
 		for(int i=0; i<lines.length-1; i++) {
 			r.append("<p>" + factorial(Integer.parseInt(lines[i])) + "</p>");
 		}
-		//long endTime = System.currentTimeMillis();
-	    //System.out.println("Total execution time: " + (endTime-startTime) + "ms"); 
 		return r.toString();
 	}
 	
-	private BigInteger factorial(int n) {
-		BigInteger result = BigInteger.ONE;
-		while (n > 1) {
-			if (factorials.containsKey(n)) return result.multiply(factorials.get(n));
-			result = result.multiply(new BigInteger(Integer.toString(n)));
-			factorials.put(n, result);
-			n--;
-		}
+	/**
+	 * Checks the 'factorials' cache to avoid unnecessary calculations. 
+	 * Returns a BigInteger in order to handle results of an arbitrary size.
+	 */
+	private static BigInteger factorial(int n) {
+		if (n == 0) return BigInteger.ONE;
+		if (factorials.containsKey(n)) return factorials.get(n);
+		
+		BigInteger result = factorial(n-1).multiply(new BigInteger(Integer.toString(n)));
+		factorials.put(n,result);
 		return result;
 	}
 }

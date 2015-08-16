@@ -12,11 +12,12 @@ import javax.ws.rs.Path;
 @Path("/ex3")
 public class Ex3 {
 
+	/**
+	 * Entry point for the AJAX call.
+	 */
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	public String getInformation(@FormParam("text") String text) {
-		//long startTime = System.currentTimeMillis();
-		
 		// Format:
 		// a * x + b * y = u
 		// c * x + d * y = v
@@ -27,7 +28,6 @@ public class Ex3 {
 		String lines[] = text.split("\\n");
 		System.out.println(Arrays.toString(lines));
 		float a,b,c,d,u,v;
-		String ma, mb, mc, md, mu, mv;
 		a = b = c = d = u = v = 0;
 		int i=0;
 		for(String line : lines) {
@@ -39,16 +39,14 @@ public class Ex3 {
 			}
 			line = line.replaceAll("\\s", "");
 			m = p.matcher(line);
+			
+			// First pass retrieves a, b, and u. Second retrieves c, d, and v.
 			if (i % 2 == 0) {
 				a = b = c = d = u = v = 0;
 				if (m.find()) {
-					ma = m.group(1);
-					mb = m.group(2);
-					mu = m.group(3);
-
-					a = getFloat(ma);
-					b = getFloat(mb);
-					u = getFloat(mu);
+					a = getFloat(m.group(1));
+					b = getFloat(m.group(2));
+					u = getFloat(m.group(3));
 				}
 				else {
 					continue;
@@ -56,15 +54,10 @@ public class Ex3 {
 			}
 			else {
 				if (m.find()) {
-					mc = m.group(1);
-					md = m.group(2);
-					mv = m.group(3);
-
-					c = getFloat(mc);
-					d = getFloat(md);
-					v = getFloat(mv);
+					c = getFloat(m.group(1));
+					d = getFloat(m.group(2));
+					v = getFloat(m.group(3));
 					
-					System.out.println("Solving: (" + a +")x + ("+b+")y = "+u +" and (" + c +")x + ("+d+")y = "+v);
 					Pair<Float, Float> result = solve(a,b,c,d,u,v);
 					r.append("<p>x=" + Math.round(result.left) + " y=" + Math.round(result.right) + "</p>");
 				}
@@ -75,12 +68,12 @@ public class Ex3 {
 			}
 			i++;
 		}
-		
-		//long endTime = System.currentTimeMillis();
-	    //System.out.println("Total execution time: " + (endTime-startTime) + "ms"); 
 		return r.toString();
 	}
 	
+	/**
+	 * Solves a two variable, two equation system of equations.
+	 */
 	private Pair<Float, Float> solve(float a, float b, float c, float d, float u, float v) {
 		if (Math.abs(a) > Math.abs(c)) {
 	         float f = u * c / a;

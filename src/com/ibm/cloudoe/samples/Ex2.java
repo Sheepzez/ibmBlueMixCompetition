@@ -14,11 +14,13 @@ import javax.ws.rs.Path;
 @Path("/ex2")
 public class Ex2 {
 
+	/**
+	 * Entry point from AJAX call.
+	 */
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
 	public String getInformation(@FormParam("text") String text) {
-		//long startTime = System.currentTimeMillis();
-		//100,50,20,10,5,2,1:57
+		// Format: 100,50,20,10,5,2,1:57
 		String lines[] = text.split("\\n");
 		Pattern p = Pattern.compile("(\\d+)");
 		Matcher m;
@@ -33,6 +35,7 @@ public class Ex2 {
 				 nums.add(Integer.parseInt(m.group()));
 			}
 			
+			// Last number is the change value.
 			changeToCalculate = nums.remove(nums.size()-1);
 			
 			// Create the output HTML.
@@ -45,8 +48,6 @@ public class Ex2 {
 			r.deleteCharAt(r.length()-1);
 			r.append("</p>");
 		}
-		//long endTime = System.currentTimeMillis();
-	    //System.out.println("Total execution time: " + (endTime-startTime) + "ms"); 
 		return r.toString();
 	}
 	
@@ -69,7 +70,6 @@ public class Ex2 {
 				i++;
 			}
 		}
-		System.out.println(result);
 		return result;
 	}
 }
